@@ -21,30 +21,29 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        
+        layout = (LinearLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.main_sb_layout, null);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("AOSPSignBoard", "Layout Click");
+            }
+        });
 
         findViewById(R.id.add_window).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                layout = (LinearLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.main_sb_layout, null);
-                layout.makeOptionalFitsSystemWindows();
-                layout.setIsRootNamespace(true);
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.e("AOSPSignBoard", "Layout Click");
-                    }
-                });
 
                 WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-                params.width = 1040;
-                params.height = 160;
-                params.type = 3001;
-                params.gravity = 17;
-                params.flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-                params.privateFlags = WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
+                params.type = WindowManager.LayoutParams.TYPE_SIGNBOARD_NORMAL;
+                params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
                 params.setTitle("SignBoard");
 
+                try {
+                    windowManager.removeView(layout);
+                } catch (Exception e) {}
+                
                 windowManager.addView(layout, params);
                 windowManager.updateViewLayout(layout, params);
             }
