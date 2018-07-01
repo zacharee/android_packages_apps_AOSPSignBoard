@@ -25,6 +25,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        
+        layout = (LinearLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.main_sb_layout, null);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("AOSPSignBoard", "Layout Click");
+            }
+        });
 
         orientationListener = new OrientationListener(this);
 
@@ -47,6 +55,10 @@ public class MainActivity extends Activity {
                 params.privateFlags = WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
                 params.setTitle("SignBoard");
 
+                try {
+                    windowManager.removeView(layout);
+                } catch (Exception e) {}
+                
                 windowManager.addView(layout, params);
                 windowManager.updateViewLayout(layout, params);
             }
