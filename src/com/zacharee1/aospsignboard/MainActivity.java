@@ -54,13 +54,13 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onStart() {
-    orientationListener.enable();
-    super.onStart();
+        orientationListener.enable();
+        super.onStart();
     }
 
     @Override protected void onStop() {
-    orientationListener.disable();
-    super.onStop();
+        orientationListener.disable();
+        super.onStop();
     }
 
     @Override
