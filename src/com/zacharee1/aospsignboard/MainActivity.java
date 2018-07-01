@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
                 params.width = 1040;
                 params.height = 160;
                 params.type = 3001;
-                params.gravity = 17;
+                params.gravity = 5;
                 params.flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
                 params.privateFlags = WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
                 params.setTitle("SignBoard");
