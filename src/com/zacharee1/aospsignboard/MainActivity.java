@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -73,8 +74,8 @@ public class MainActivity extends Activity {
                 oldRot = rot;
 
                 int toDeg = 0;
-                float pX = pivotX;
-                float pY = pivotY;
+                int width = 1040;
+                int height = 160;
 
                 switch (rot) {
                     case Surface.ROTATION_0:
@@ -82,29 +83,24 @@ public class MainActivity extends Activity {
                         break;
                     case Surface.ROTATION_90:
                         toDeg = -90;
-                        pX = pivotX;
-                        pY = pivotX;
+                        width = 160;
+                        height = 1040;
                         break;
                     case Surface.ROTATION_180:
                         toDeg = 180;
-                        pX = pivotX;
-                        pY = pivotY;
                         break;
                     case Surface.ROTATION_270:
                         toDeg = 90;
-                        pX = pivotY;
-                        pY = pivotY;
+                        width = 160;
+                        height = 160;
                         break;
                 }
 
-                layout.setPivotX(pX);
-                layout.setPivotY(pY);
                 layout.setRotation(toDeg);
-                layout.invalidate();
 
-                ViewGroup.LayoutParams layoutParams = layout.getLayoutParams();
-                layoutParams.width = 1040;
-                layoutParams.height = 160;
+                params.width = width;
+                params.height = height;
+                windowManager.updateViewLayout(layout, params);
             }
         }
     }
