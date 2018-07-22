@@ -1,39 +1,42 @@
 package com.zacharee1.aospsignboard;
 
-import android.app.Activity;
+import android.appwidget.*;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.OrientationEventListener;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
-public class MainActivity extends Activity {
-    private LinearLayout layout;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    private ViewPager layout;
     private WindowManager windowManager;
-    private RotationWatcher rotationWatcher;
+    private AppWidgetManager manager;
+    private AppWidgetHost host;
     private WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-
-    private float pivotX = 1040f / 2f;
-    private float pivotY = 160f / 2f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        manager = AppWidgetManager.getInstance(getApplicationContext());
+        host = new CustomHost(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
-        rotationWatcher = new RotationWatcher(this);
-
-        layout = (LinearLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.main_sb_layout, null);
+        layout = (ViewPager) LayoutInflater.from(getApplicationContext()).inflate(R.layout.main_sb_layout, null);
         layout.setOnClickListener(v -> Log.e("AOSPSignBoard", "Layout Click"));
+        setUpHosts();
 
         findViewById(R.id.add_window).setOnClickListener(v -> {
-            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
             params.type = WindowManager.LayoutParams.TYPE_SIGNBOARD_NORMAL;
             params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -44,12 +47,21 @@ public class MainActivity extends Activity {
                 windowManager.removeView(layout);
             } catch (Exception ignored) {}
 
-            windowManager.addView(layout, params);
-            windowManager.updateViewLayout(layout, params);
 
-            rotationWatcher.enable();
-            rotationWatcher.onOrientationChanged(0);
+            windowManager.addView(layout, params);
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        host.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        host.stopListening();
     }
 
     @Override
@@ -57,50 +69,161 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         windowManager.removeView(layout);
-        rotationWatcher.disable();
     }
 
-    private class RotationWatcher extends OrientationEventListener {
-        private int oldRot = -1;
+    private void setUpHosts() {
+        int category = getResources().getInteger(R.integer.category);
+        List<AppWidgetProviderInfo> infos = manager.getInstalledProviders(category);
 
-        public RotationWatcher(Context context) {
-            super(context);
+        layout.setAdapter(new InfinitePagerAdapter(new Adapter(new ArrayList<>(infos), host, getApplicationContext())));
+    }
+
+    private static class Adapter extends PagerAdapter {
+        private ArrayList<AppWidgetProviderInfo> infos = new ArrayList<>();
+        private AppWidgetHost host;
+        private Context context;
+
+        public Adapter(ArrayList<AppWidgetProviderInfo> infos, AppWidgetHost host, Context context) {
+            this.infos.addAll(infos);
+            this.host = host;
+            this.context = context;
         }
 
         @Override
-        public void onOrientationChanged(int orientation) {
-            int rot = windowManager.getDefaultDisplay().getRotation();
-            if (rot != oldRot) {
-                oldRot = rot;
+        public int getItemPosition(Object object) {
+            if (object instanceof AppWidgetProviderInfo) return infos.indexOf(object);
+            else return -1;
+        }
 
-                int toDeg = 0;
-                int width = 1040;
-                int height = 160;
+        @Override
+        public int getCount() {
+            return infos.size();
+        }
 
-                switch (rot) {
-                    case Surface.ROTATION_0:
-                        toDeg = 0;
-                        break;
-                    case Surface.ROTATION_90:
-                        toDeg = -90;
-                        width = 160;
-                        height = 1040;
-                        break;
-                    case Surface.ROTATION_180:
-                        toDeg = 180;
-                        break;
-                    case Surface.ROTATION_270:
-                        toDeg = 90;
-                        width = 160;
-                        height = 160;
-                        break;
-                }
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
 
-                layout.setRotation(toDeg);
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            int id = host.allocateAppWidgetId();
+            AppWidgetHostView view = host.createView(context, id, infos.get(position));
+            view.setAppWidget(id, infos.get(position));
+            container.addView(view);
 
-                params.width = width;
-                params.height = height;
-                windowManager.updateViewLayout(layout, params);
+            AppWidgetManager.getInstance(context).bindAppWidgetId(id, infos.get(position).provider);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            if (object instanceof View) {
+                container.removeView((View) object);
+            }
+        }
+    }
+
+    /*
+     * Copyright (C) 2016 The CyanogenMod Project
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+
+    /**
+     * A PagerAdapter that wraps around another PagerAdapter to handle paging wrap-around.
+     */
+    public class InfinitePagerAdapter extends PagerAdapter {
+
+        private static final String TAG = "InfinitePagerAdapter";
+        private static final boolean DEBUG = false;
+
+        private PagerAdapter adapter;
+
+        public InfinitePagerAdapter(PagerAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public int getCount() {
+            // warning: scrolling to very high values (1,000,000+) results in
+            // strange drawing behaviour
+            return Integer.MAX_VALUE;
+        }
+
+        /**
+         * @return the {@link #getCount()} result of the wrapped adapter
+         */
+        public int getRealCount() {
+            return adapter.getCount();
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            int virtualPosition = position % getRealCount();
+            debug("instantiateItem: real position: " + position);
+            debug("instantiateItem: virtual position: " + virtualPosition);
+
+            // only expose virtual position to the inner adapter
+            return adapter.instantiateItem(container, virtualPosition);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            int virtualPosition = position % getRealCount();
+            debug("destroyItem: real position: " + position);
+            debug("destroyItem: virtual position: " + virtualPosition);
+
+            // only expose virtual position to the inner adapter
+            adapter.destroyItem(container, virtualPosition, object);
+        }
+
+        /*
+         * Delegate rest of methods directly to the inner adapter.
+         */
+
+        @Override
+        public void finishUpdate(ViewGroup container) {
+            adapter.finishUpdate(container);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return adapter.isViewFromObject(view, object);
+        }
+
+        @Override
+        public void restoreState(Parcelable bundle, ClassLoader classLoader) {
+            adapter.restoreState(bundle, classLoader);
+        }
+
+        @Override
+        public Parcelable saveState() {
+            return adapter.saveState();
+        }
+
+        @Override
+        public void startUpdate(ViewGroup container) {
+            adapter.startUpdate(container);
+        }
+
+        /*
+         * End delegation
+         */
+
+        private void debug(String message) {
+            if (DEBUG) {
+                Log.d(TAG, message);
             }
         }
     }
