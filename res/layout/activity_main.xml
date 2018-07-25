@@ -10,4 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_window" />
+
+    <Button
+            android:id="@+id/remove_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remove_all" />
+
 </LinearLayout>

@@ -22,10 +22,20 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        ISignBoardService service = ISignBoardService.Stub.asInterface(ServiceManager.getService("signboardservice"));
+
         findViewById(R.id.add_window).setOnClickListener(v -> {
-            ISignBoardService service = ISignBoardService.Stub.asInterface(ServiceManager.getService("signboardservice"));
             try {
+                service.removeAllViews();
                 service.initViews();
+            } catch (RemoteException e) {
+                Log.w("AOSPSignBoard", e.getLocalizedMessage());
+            }
+        });
+
+        findViewById(R.id.remove_all).setOnClickListener(v -> {
+            try {
+                service.removeAllViews();
             } catch (RemoteException e) {
                 Log.w("AOSPSignBoard", e.getLocalizedMessage());
             }
