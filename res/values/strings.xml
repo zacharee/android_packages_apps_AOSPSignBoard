@@ -3,4 +3,5 @@
 
     <string name="add_window">Add Window</string>
     <string name="remove_all">Remove All</string>
+    <string name="signboard_layout">SignBoard Layout</string>
 </resources>

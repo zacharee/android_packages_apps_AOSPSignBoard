@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,19 +25,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PageEditorActivity extends Activity {
+public class PageEditorActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Adapter adapter;
     private ItemTouchHelper helper;
 
-    private ArrayList<ComponentName> enabledWidgets = new ArrayList<>();
+    private ArrayList<ItemView.Info> widgets = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout_editor);
 
-        adapter = new Adapter(parseWidgets(), v -> helper.startDrag(v), new WidgetListener() {
+        parseWidgets();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        adapter = new Adapter(widgets, v -> helper.startDrag(v), new WidgetListener() {
             @Override
             public void onEnableStateChanged(boolean enabled, ComponentName componentName, int position) {
                 removeOrAddWidget(componentName, enabled, position);
@@ -43,6 +51,14 @@ public class PageEditorActivity extends Activity {
             @Override
             public void onPositionChanged(int from, int to, ComponentName componentName) {
                 moveWidget(componentName, from, to);
+            }
+
+            @Override
+            public void launchComponent(ComponentName configure) {
+                Intent launch = new Intent(Intent.ACTION_VIEW);
+                launch.setComponent(configure);
+                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(launch);
             }
         });
 
@@ -58,12 +74,23 @@ public class PageEditorActivity extends Activity {
         helper.attachToRecyclerView(recyclerView);
     }
 
-    private ArrayList<ItemView.Info> parseWidgets() {
-        ArrayList<ItemView.Info> ret = new ArrayList<>();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void parseWidgets() {
         List<AppWidgetProviderInfo> avail =
                 AppWidgetManager.getInstance(this)
                         .getInstalledProviders(Resources.getSystem().getInteger(com.android.internal.R.integer.config_signBoardCategory));
         String storedEnabled = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_SIGNBOARD_COMPONENTS);
+
+        ArrayList<ComponentName> enabledWidgets;
         if (storedEnabled == null || storedEnabled.isEmpty()) enabledWidgets = new ArrayList<>();
         else enabledWidgets =
                 Arrays.stream(storedEnabled.split(";"))
@@ -78,36 +105,35 @@ public class PageEditorActivity extends Activity {
             info.configure = i.configure;
             info.enabled = enabledWidgets.contains(i.provider);
             info.title = i.loadLabel(getPackageManager());
-            ret.add(info);
+            widgets.add(info);
         });
 
-        ArrayList<ItemView.Info> newRet = ret.stream()
+        ArrayList<ItemView.Info> newRet = widgets.stream()
                 .filter(i -> i.enabled).collect(Collectors.toCollection(ArrayList::new));
-        ret.removeAll(newRet);
+        widgets.removeAll(newRet);
 
         for (int i = 0; i < enabledWidgets.size(); i++) {
-            ret.add(i, newRet.get(i));
+            widgets.add(i, newRet.get(i));
         }
-
-        return ret;
     }
 
     private void moveWidget(ComponentName widget, int from, int to) {
-        ComponentName w = enabledWidgets.remove(from);
-        enabledWidgets.add(to, w);
-        saveList(enabledWidgets);
+        ItemView.Info w = widgets.remove(from);
+        widgets.add(to, w);
+        saveList();
     }
 
     private void removeOrAddWidget(ComponentName widget, boolean enabled, int position) {
-        if (enabled) enabledWidgets.add(position, widget);
-        else enabledWidgets.remove(widget);
-        saveList(enabledWidgets);
+        widgets.get(position).enabled = enabled;
+        saveList();
     }
 
-    private void saveList(ArrayList<ComponentName> widgets) {
+    private void saveList() {
         Settings.Secure.putString(getContentResolver(),
                 Settings.Secure.ENABLED_SIGNBOARD_COMPONENTS,
-                TextUtils.join(";", widgets.stream().map(ComponentName::flattenToString).collect(Collectors.toCollection(ArrayList::new))));
+                TextUtils.join(";", widgets.stream()
+                        .filter(i -> i.enabled)
+                        .map(i -> i.component.flattenToString()).collect(Collectors.toCollection(ArrayList::new))));
     }
 
     public static class Adapter extends RecyclerView.Adapter<Adapter.VH> implements ItemTouchHelperAdapter {
@@ -150,15 +176,34 @@ public class PageEditorActivity extends Activity {
                 return true;
             });
 
+            holder.getRoot().setOnClickListener(v -> {
+                if(!info.enabled) {
+                    info.enabled = true;
+                    widgetListener.onEnableStateChanged(true, info.component, holder.getAdapterPosition());
+                    ((ItemView) holder.itemView).toggle.setChecked(true);
+                } else {
+                    if (info.configure != null) widgetListener.launchComponent(info.configure);
+                }
+            });
+
             ((ItemView) holder.itemView).toggle.setOnCheckedChangeListener((button, checked) -> {
-                widgetListener.onEnableStateChanged(checked, info.component, holder.getAdapterPosition());
                 info.enabled = checked;
+
+                widgetListener.onEnableStateChanged(checked, info.component, holder.getAdapterPosition());
             });
         }
 
         @Override
         public int getItemCount() {
             return infos.size();
+        }
+
+        public int lastEnabled() {
+            for (ItemView.Info info : infos) {
+                if (!info.enabled) return infos.indexOf(info) - 1;
+            }
+
+            return -1;
         }
 
         static class VH extends RecyclerView.ViewHolder {
@@ -176,6 +221,10 @@ public class PageEditorActivity extends Activity {
 
             public ImageView getHandle() {
                 return ((ItemView) itemView).handle;
+            }
+
+            public LinearLayout getRoot() {
+                return (LinearLayout) itemView.findViewById(R.id.root);
             }
         }
     }
@@ -226,6 +275,7 @@ public class PageEditorActivity extends Activity {
     public interface WidgetListener {
         void onEnableStateChanged(boolean enabled, ComponentName componentName, int position);
         void onPositionChanged(int from, int to, ComponentName componentName);
+        void launchComponent(ComponentName configure);
     }
 
     public interface ItemTouchHelperAdapter {

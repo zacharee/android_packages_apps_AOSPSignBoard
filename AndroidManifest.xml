@@ -23,7 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".PageEditorActivity"
-                android:exported="true" />
+                android:exported="true"
+                android:label="@string/signboard_layout"
+                />
     </application>
 
 </manifest>
