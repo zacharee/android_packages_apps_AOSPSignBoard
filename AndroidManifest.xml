@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zacharee1.aospsignboard">
+        package="com.zacharee1.aospsignboard"
+        coreApp="true" android:sharedUserId="android.uid.system">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MANAGE_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.MANAGE_SIGNBOARD" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +32,25 @@
         <activity android:name=".PageEditorActivity"
                 android:exported="true"
                 android:label="@string/signboard_layout"
-                />
+        />
+        <activity android:name=".configure.QuickTogglesConfigure"
+                  android:exported="true"
+        />
+
+        <receiver android:name=".widgets.QuickToggles"
+            android:permission="android.permission.MANAGE_SIGNBOARD">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.android.signboard.action.UPDATE_QUICKTOGGLES" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/quicktoggles_info" />
+        </receiver>
+        <receiver android:name=".receivers.ActionReceiver">
+            <intent-filter>
+                <action android:name="com.android.signboard.action.TOGGLE_QT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
