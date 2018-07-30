@@ -13,6 +13,7 @@ public class ActionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        PendingResult result = goAsync();
         switch (intent.getAction()) {
             case SignBoardManager.ACTION_TOGGLE_QUICKTOGGLE:
                 if (intent.hasExtra(SignBoardManager.QT_TOGGLE)) {
@@ -25,5 +26,6 @@ public class ActionReceiver extends BroadcastReceiver {
                 }
                 break;
         }
+        result.finish();
     }
 }
