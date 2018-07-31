@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -18,8 +19,10 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_SRC_FILES += $(call all-java-files-under, libs/ColorPicker/library/src/main/java)
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
+LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/libs/ColorPicker/library/src/main/res
 ifeq ($(TARGET_BUILD_APPS),)
     LOCAL_RESOURCE_DIR += frameworks/support/v7/appcompat/res
     LOCAL_RESOURCE_DIR += frameworks/support/v7/recyclerview/res
@@ -27,10 +30,6 @@ else
     LOCAL_RESOURCE_DIR += prebuilts/sdk/current/support/v7/appcompat/res
     LOCAL_RESOURCE_DIR += prebuilts/sdk/current/support/v7/recyclerview/res
 endif
-LOCAL_RESOURCE_DIR += frameworks/opt/chips/res
-LOCAL_RESOURCE_DIR += frameworks/opt/colorpicker/res
-LOCAL_RESOURCE_DIR += frameworks/opt/photoviewer/res
-LOCAL_RESOURCE_DIR += frameworks/opt/photoviewer/activity/res
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-common-framesequence
@@ -39,12 +38,6 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-appcompat
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-palette
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-recyclerview
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
-LOCAL_STATIC_JAVA_LIBRARIES += com.android.vcard
-LOCAL_STATIC_JAVA_LIBRARIES += guava
-LOCAL_STATIC_JAVA_LIBRARIES += libchips
-LOCAL_STATIC_JAVA_LIBRARIES += libphotoviewer
-LOCAL_STATIC_JAVA_LIBRARIES += libphonenumber
-LOCAL_STATIC_JAVA_LIBRARIES += colorpicker
 
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.appcompat
@@ -52,17 +45,13 @@ LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.recyclerview
 LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips
 LOCAL_AAPT_FLAGS += --extra-packages com.android.vcard
 LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.photo
-LOCAL_AAPT_FLAGS += --extra-packages com.android.colorpicker
-
-ifdef TARGET_BUILD_APPS
-    LOCAL_JNI_SHARED_LIBRARIES := libframesequence libgiftranscode
-else
-    LOCAL_REQUIRED_MODULES:= libframesequence libgiftranscode
-endif
+LOCAL_AAPT_FLAGS += --extra-packages com.jaredrummler.android.colorpicker
 
 LOCAL_PACKAGE_NAME := AOSPSignBoard
 
 LOCAL_CERTIFICATE := platform
+
+LOCAL_PRIVILEGED_MODULE := true
 
 include $(BUILD_PACKAGE)
 

@@ -1,9 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recycler"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="16dp"
+              android:orientation="vertical">
 
-</android.support.v7.widget.RecyclerView>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:text="@string/preview"
+    />
+
+    <android.support.v7.widget.RecyclerView
+            android:layout_width="1040px"
+            android:layout_height="160px"
+            android:background="#000"
+            android:gravity="center_vertical"
+            android:id="@+id/recycler"
+            android:isScrollContainer="false"
+            android:overScrollMode="never"
+            android:layout_gravity="center"
+    />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:text="@string/preview_summary"
+    />
+
+    <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#ccc"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+    />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:text="@string/available"
+    />
+
+    <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="160px"
+            android:id="@+id/avail"
+            android:background="#000"
+    />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:text="@string/available_summary"
+    />
+
+    <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#ccc"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+    />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/prefs_holder"
+    />
+
+</LinearLayout>

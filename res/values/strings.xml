@@ -1,7 +1,26 @@
 <resources>
     <string name="app_name">AOSPSignBoard</string>
 
+    <!-- Titles-->
     <string name="add_window">Add Window</string>
     <string name="remove_all">Remove All</string>
     <string name="signboard_layout">SignBoard Layout</string>
+    <string name="preview">Preview</string>
+    <string name="available">Available</string>
+
+    <!-- Summaries -->
+    <string name="preview_summary">This is what will show in the signboard. Long-press a toggle to move it. Swipe up or down to remove.</string>
+    <string name="available_summary">These are the available toggles. Tap one to add it to the SignBoard.</string>
+
+    <!-- Toggles -->
+    <string name="volume">Ringer Volume</string>
+    <string name="wifi">WiFi</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="flashlight">Flashlight</string>
+    <string name="airplane">Airplane Mode</string>
+    <string name="rotation">Rotation</string>
+    <string name="location">Location</string>
+    <string name="data">Mobile Data</string>
+    <string name="settings">Settings</string>
+    <string name="camera">Camera</string>
 </resources>

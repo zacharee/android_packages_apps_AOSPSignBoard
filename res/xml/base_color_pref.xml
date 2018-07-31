@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="base"
+            android:defaultValue="@android:color/white"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+</PreferenceScreen>

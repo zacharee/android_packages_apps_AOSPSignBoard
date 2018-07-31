@@ -7,7 +7,7 @@
            android:clickable="true"
            android:focusable="true"
            android:padding="20px"
-           android:tint="#fff"
+
            android:background="@drawable/ripple"
            android:layout_weight="1">
 
