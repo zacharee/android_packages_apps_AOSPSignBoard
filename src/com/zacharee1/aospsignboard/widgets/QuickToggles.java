@@ -56,11 +56,6 @@ public class QuickToggles extends AppWidgetProvider {
     }
 
     @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        App.get(context).setQuickToolsEnabled(false);
-    }
-
-    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         ArrayList<String> split = App.get(context).getToggleList();
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.quicktoggles_root);

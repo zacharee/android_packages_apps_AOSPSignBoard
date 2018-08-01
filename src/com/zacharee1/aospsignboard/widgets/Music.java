@@ -46,11 +46,6 @@ public class Music extends AppWidgetProvider {
     }
 
     @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        App.get(context).setMusicControllerEnabled(false);
-    }
-
-    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.music_root);
         MusicButton button = MusicButton.getInstance(context);

@@ -6,15 +6,9 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/add_window"
+        android:id="@+id/settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_window" />
-
-    <Button
-            android:id="@+id/remove_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remove_all" />
+        android:text="@string/settings" />
 
 </LinearLayout>

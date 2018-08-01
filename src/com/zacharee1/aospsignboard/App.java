@@ -46,6 +46,10 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         SignBoardManager.getInstance(this).initViews();
+
+        quickToolsListener.onCreate();
+        flashlightController.onCreate();
+        musicController.onCreate();
     }
 
     public ArrayList<String> getToggleList() {
