@@ -3,9 +3,9 @@
                     android:minWidth="1040px"
                     android:minHeight="160px"
                     android:updatePeriodMillis="86400000"
-                    android:configure="com.zacharee1.aospsignboard.configure.QuickTogglesConfigure"
+                    android:configure="com.zacharee1.aospsignboard.configure.MusicConfigure"
                     android:resizeMode="horizontal"
-                    android:initialLayout="@layout/quicktoggles_root"
-                    android:label="@string/quicktoggles"
+                    android:initialLayout="@layout/music_root"
+                    android:label="@string/music_controller"
                     android:widgetCategory="@*android:integer/config_signBoardCategory"
 />

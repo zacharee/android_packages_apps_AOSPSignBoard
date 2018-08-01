@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="title_color"
+            android:defaultValue="@android:color/white"
+            android:title="@string/title"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="artist_color"
+            android:defaultValue="@android:color/white"
+            android:title="@string/artist"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="previous_color"
+            android:defaultValue="@android:color/white"
+            android:title="@string/prev"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="play_pause_color"
+            android:defaultValue="@android:color/white"
+            android:title="@string/play_pause"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="next_color"
+            android:defaultValue="@android:color/white"
+            android:title="@string/next"
+            app:cpv_allowPresets="true"
+            app:cpv_allowCustom="true" />
+
+</PreferenceScreen>

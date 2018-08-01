@@ -21,7 +21,7 @@ import com.jaredrummler.android.colorpicker.ColorPreference;
 import com.zacharee1.aospsignboard.PageEditorActivity;
 import com.zacharee1.aospsignboard.R;
 import com.zacharee1.aospsignboard.widgets.QuickToggles;
-import com.zacharee1.aospsignboard.widgets.qticons.QTIcon;
+import com.zacharee1.aospsignboard.widgets.helpers.QTIcon;
 
 import java.util.ArrayList;
 import java.util.Arrays;

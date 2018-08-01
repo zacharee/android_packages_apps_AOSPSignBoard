@@ -1,4 +1,4 @@
-package com.zacharee1.aospsignboard.widgets.qticons;
+package com.zacharee1.aospsignboard.widgets.helpers;
 
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
@@ -193,7 +193,7 @@ public class QTIcon {
         switch (key) {
             default:
                 intent = new Intent(SignBoardManager.ACTION_TOGGLE_QUICKTOGGLE);
-                intent.putExtra(SignBoardManager.QT_TOGGLE, key);
+                intent.putExtra(SignBoardManager.EXTRA_QT_TOGGLE, key);
                 intent.setComponent(new ComponentName(context, ActionReceiver.class));
                 pendingIntent = PendingIntent.getBroadcast(context, key.hashCode(), intent, 0);
                 break;

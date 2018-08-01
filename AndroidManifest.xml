@@ -1,57 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.zacharee1.aospsignboard"
-        coreApp="true" android:sharedUserId="android.uid.system">
+          package="com.zacharee1.aospsignboard"
+          coreApp="true" android:sharedUserId="android.uid.system">
 
     <uses-sdk android:targetSdkVersion="27"
-            android:minSdkVersion="27" />
+              android:minSdkVersion="27"/>
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
-    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.MANAGE_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.MANAGE_SIGNBOARD" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW"/>
+    <uses-permission android:name="android.permission.BIND_APPWIDGET"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.MANAGE_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.MANAGE_SIGNBOARD"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme">
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme">
         <activity android:name=".MainActivity"
                   android:configChanges="orientation|screenSize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name=".PageEditorActivity"
-                android:exported="true"
-                android:label="@string/signboard_layout"
+                  android:exported="true"
+                  android:label="@string/signboard_layout"
         />
         <activity android:name=".configure.QuickTogglesConfigure"
                   android:exported="true"
         />
+        <activity android:name=".configure.MusicConfigure"
+                  android:exported="true"
+        />
 
         <receiver android:name=".widgets.QuickToggles"
-            android:permission="android.permission.MANAGE_SIGNBOARD">
+                  android:permission="android.permission.MANAGE_SIGNBOARD"
+                  android:label="@string/quicktoggles">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.android.signboard.action.UPDATE_QUICKTOGGLES" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.android.signboard.action.UPDATE_QUICKTOGGLES"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/quicktoggles_info" />
+                       android:resource="@xml/quicktoggles_info"/>
+        </receiver>
+        <receiver android:name=".widgets.Music"
+                  android:permission="android.permission.MANAGE_SIGNBOARD"
+                  android:label="@string/music_controller">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.android.signboard.action.UPDATE_MUSIC"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/music_info"/>
         </receiver>
         <receiver android:name=".receivers.ActionReceiver">
             <intent-filter>
-                <action android:name="com.android.signboard.action.TOGGLE_QT" />
+                <action android:name="com.android.signboard.action.TOGGLE_QT"/>
             </intent-filter>
         </receiver>
     </application>
