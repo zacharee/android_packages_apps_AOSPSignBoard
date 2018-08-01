@@ -21,6 +21,7 @@ import android.provider.Settings;
 import android.support.annotation.ColorInt;
 import android.telephony.TelephonyManager;
 import android.util.SparseIntArray;
+import com.zacharee1.aospsignboard.App;
 import com.zacharee1.aospsignboard.R;
 import com.zacharee1.aospsignboard.receivers.ActionReceiver;
 
@@ -132,13 +133,13 @@ public class QTIcon {
                 stateRunner = () -> ((AudioManager) manager).getRingerMode();
                 break;
             case QT_FLASHLIGHT:
-                manager = SignBoardManager.getInstance(context);
+                manager = null;
                 layoutId = R.layout.qt_flashlight;
                 viewId = R.id.flashlight;
                 titleId = R.string.flashlight;
                 drawableIds.put(STATE_DISABLED, R.drawable.flashlight_off);
                 drawableIds.put(STATE_ENABLED, R.drawable.flashlight_on);
-                stateRunner = () -> ((SignBoardManager) manager).isFlashlightEnabled() ? STATE_ENABLED : STATE_DISABLED;
+                stateRunner = () -> App.get(context).isFlashlightEnabled() ? STATE_ENABLED : STATE_DISABLED;
                 break;
             case QT_ROTATION:
                 manager = null;

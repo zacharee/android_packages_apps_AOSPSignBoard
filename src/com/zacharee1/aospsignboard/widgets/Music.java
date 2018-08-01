@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SignBoardManager;
 import android.widget.RemoteViews;
+import com.zacharee1.aospsignboard.App;
 import com.zacharee1.aospsignboard.R;
 import com.zacharee1.aospsignboard.receivers.ActionReceiver;
 import com.zacharee1.aospsignboard.widgets.helpers.MusicButton;
@@ -36,17 +37,17 @@ public class Music extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        SignBoardManager.getInstance(context).setMusicControllerEnabled(true);
+        App.get(context).setMusicControllerEnabled(true);
     }
 
     @Override
     public void onDisabled(Context context) {
-        SignBoardManager.getInstance(context).setMusicControllerEnabled(false);
+        App.get(context).setMusicControllerEnabled(false);
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        SignBoardManager.getInstance(context).setMusicControllerEnabled(false);
+        App.get(context).setMusicControllerEnabled(false);
     }
 
     @Override

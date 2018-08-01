@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SignBoardManager;
 import android.widget.RemoteViews;
+import com.zacharee1.aospsignboard.App;
 import com.zacharee1.aospsignboard.R;
 import com.zacharee1.aospsignboard.widgets.helpers.QTIcon;
 
@@ -46,17 +47,22 @@ public class QuickToggles extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        SignBoardManager.getInstance(context).setQuickToolsEnabled(true);
+        App.get(context).setQuickToolsEnabled(true);
     }
 
     @Override
     public void onDisabled(Context context) {
-        SignBoardManager.getInstance(context).setQuickToolsEnabled(false);
+        App.get(context).setQuickToolsEnabled(false);
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        App.get(context).setQuickToolsEnabled(false);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        ArrayList<String> split = SignBoardManager.getInstance(context).getList();
+        ArrayList<String> split = App.get(context).getToggleList();
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.quicktoggles_root);
         root.removeAllViews(R.id.root);
 
